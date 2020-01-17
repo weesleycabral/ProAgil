@@ -32,6 +32,8 @@ namespace ProAgil.API
             
             
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddCors();
             
             services.AddControllers();
         }
@@ -39,7 +41,7 @@ namespace ProAgil.API
         
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -47,6 +49,8 @@ namespace ProAgil.API
             }
 
             // app.UseHttpsRedirection();
+
+             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.UseRouting();
 
