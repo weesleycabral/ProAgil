@@ -1,7 +1,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ProAgil.API.Data;
+using ProAgil.Repository;
 
 namespace ProAgil.API.Controllers
 {
@@ -10,9 +10,9 @@ namespace ProAgil.API.Controllers
     public class EventosController : ControllerBase
     {
 
-        public DataContext Context { get; }
+        public ProAgilContext Context { get; }
 
-        public EventosController(DataContext context)
+        public EventosController(ProAgilContext context)
         {
             this.Context = context;
         }

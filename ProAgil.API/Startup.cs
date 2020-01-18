@@ -11,13 +11,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using ProAgil.API.Data;
+using ProAgil.Repository;
 
 namespace ProAgil.API
 {
     public class Startup
     {
-        
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,16 +29,16 @@ namespace ProAgil.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            
-            
-            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+
+            services.AddDbContext<ProAgilContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddCors();
-            
+
             services.AddControllers();
         }
 
-        
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -50,7 +50,9 @@ namespace ProAgil.API
 
             // app.UseHttpsRedirection();
 
-             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
+            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -62,8 +64,8 @@ namespace ProAgil.API
             });
         }
 
-        
+
     }
 
-    
+
 }
