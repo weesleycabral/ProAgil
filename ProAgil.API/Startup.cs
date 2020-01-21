@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using ProAgil.Repository;
+using Newtonsoft.Json;
 
 namespace ProAgil.API
 {
@@ -29,13 +30,17 @@ namespace ProAgil.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-
+            services.AddScoped<IProAgilRepository, ProAgilRepository>();
 
             services.AddDbContext<ProAgilContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddCors();
 
             services.AddControllers();
+
+            services.AddMvc(option => option.EnableEndpointRouting = false)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
         }
 
 

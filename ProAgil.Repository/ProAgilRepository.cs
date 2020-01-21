@@ -1,4 +1,6 @@
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ProAgil.Domains;
 
 namespace ProAgil.Repository
@@ -28,33 +30,103 @@ namespace ProAgil.Repository
 
         public async Task<bool> SaveChangesAsync()
         {
-          return  (await _Context.SaveChangesAsync()) > 0;
+            return (await _Context.SaveChangesAsync()) > 0;
         }
 
 
-        public Task<Evento[]> GetAllEventosAsync(bool includePalestrantes)
+        public async Task<Evento[]> GetAllEventosAsync(bool includePalestrantes = false)
         {
-            throw new System.NotImplementedException();
+            IQueryable<Evento> query = _Context.Eventos
+            .Include(c => c.Lotes)
+            .Include(c => c.RedesSociais);
+
+            if (includePalestrantes)
+            {
+                query = query
+
+                .Include(pe => pe.PalestranteEvento)
+                .ThenInclude(p => p.Palestrante);
+            }
+
+            query = query.OrderByDescending(c => c.DataEvento);
+
+            return await query.ToArrayAsync();
         }
 
-        public Task<Evento[]> GetAllEventosAsyncByTema(string tema, bool includePalestrantes)
+        public async Task<Evento[]> GetAllEventosAsyncByTema(string tema, bool includePalestrantes)
         {
-            throw new System.NotImplementedException();
+             IQueryable<Evento> query = _Context.Eventos
+            .Include(c => c.Lotes)
+            .Include(c => c.RedesSociais);
+
+            if (includePalestrantes)
+            {
+                query = query
+
+                .Include(pe => pe.PalestranteEvento)
+                .ThenInclude(p => p.Palestrante);
+            }
+
+            query = query.OrderByDescending(c => c.DataEvento)
+                .Where(c => c.Tema.ToLower().Contains(tema.ToLower()));
+
+            return await query.ToArrayAsync();
         }
 
-        public Task<Evento[]> GetAllPalestranteAsyncByName(bool includePalestrantes)
+        public async  Task<Palestrante[]> GetAllPalestranteAsyncByName(string nome, bool includeEventos)
         {
-            throw new System.NotImplementedException();
+               IQueryable<Palestrante> query = _Context.Palestrantes
+            .Include(c => c.RedesSociais);
+
+            if (includeEventos)
+            {
+                query = query
+
+                .Include(pe => pe.PalestranteEvento)
+                .ThenInclude(e => e.Evento);
+            }
+
+            query = query.Where(p => p.Nome.ToLower().Contains(nome.ToLower()));
+
+            return await query.ToArrayAsync();
         }
 
-        public Task<Evento> GetEventosAsyncByID(int EventoID, bool includePalestrantes)
+        public async Task<Evento> GetEventosAsyncByID(int EventoID, bool includePalestrantes)
         {
-            throw new System.NotImplementedException();
+            IQueryable<Evento> query = _Context.Eventos
+            .Include(c => c.Lotes)
+            .Include(c => c.RedesSociais);
+
+            if (includePalestrantes)
+            {
+                query = query
+
+                .Include(pe => pe.PalestranteEvento)
+                .ThenInclude(p => p.Palestrante);
+            }
+
+            query = query.OrderByDescending(c => c.DataEvento)
+                .Where(c => c.ID == EventoID);
+
+            return await query.FirstOrDefaultAsync();
         }
 
-        public Task<Evento> GetPalestranteAsyncByID(int PalestranteID, bool includePalestrantes)
+        public async Task<Palestrante> GetPalestranteAsyncByID(int PalestranteID, bool includeEventos = false)
         {
-            throw new System.NotImplementedException();
+             IQueryable<Palestrante> query = _Context.Palestrantes
+            .Include(c => c.RedesSociais);
+
+            if (includeEventos)
+            {
+                query = query
+
+                .Include(pe => pe.PalestranteEvento)
+                .ThenInclude(e => e.Evento);
+            }
+
+            query = query.OrderBy(c => c.Nome).Where(p => p.ID == PalestranteID);
+
+            return await query.FirstOrDefaultAsync();
         }
 
 
