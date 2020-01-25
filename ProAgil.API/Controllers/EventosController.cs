@@ -91,7 +91,7 @@ namespace ProAgil.API.Controllers
 
         }
 
-         [HttpPut]
+         [HttpPut("{EventoID}")]
 
         public async Task<IActionResult> Put(int EventoID, Evento model)
         {
@@ -106,20 +106,20 @@ namespace ProAgil.API.Controllers
                 Repo.Update(model);
 
                 if(await Repo.SaveChangesAsync()) {
-                    return Created($"/api/evento/{model.ID}", model);
+                    return Created($"/api/eventos/{model.ID}", model);
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
 
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou" + ex.Message);
             }
 
             return BadRequest("Error! D:");
 
         }
 
-         [HttpDelete]
+         [HttpDelete("{EventoID}")]
 
         public async Task<IActionResult> Delete(int EventoID)
         {

@@ -12,6 +12,9 @@ namespace ProAgil.Repository
         public ProAgilRepository(ProAgilContext Context)
         {
             _Context = Context;
+            // Não da Lock de Linhas em nenhuma chamada de Queries em todo o Contexto
+            _Context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
 
         }
         public void Add<T>(T entity) where T : class
@@ -55,9 +58,9 @@ namespace ProAgil.Repository
 
         public async Task<Evento[]> GetAllEventosAsyncByTema(string tema, bool includePalestrantes)
         {
-             IQueryable<Evento> query = _Context.Eventos
-            .Include(c => c.Lotes)
-            .Include(c => c.RedesSociais);
+            IQueryable<Evento> query = _Context.Eventos
+           .Include(c => c.Lotes)
+           .Include(c => c.RedesSociais);
 
             if (includePalestrantes)
             {
@@ -73,10 +76,10 @@ namespace ProAgil.Repository
             return await query.ToArrayAsync();
         }
 
-        public async  Task<Palestrante[]> GetAllPalestranteAsyncByName(string nome, bool includeEventos)
+        public async Task<Palestrante[]> GetAllPalestranteAsyncByName(string nome, bool includeEventos)
         {
-               IQueryable<Palestrante> query = _Context.Palestrantes
-            .Include(c => c.RedesSociais);
+            IQueryable<Palestrante> query = _Context.Palestrantes
+         .Include(c => c.RedesSociais);
 
             if (includeEventos)
             {
@@ -113,8 +116,8 @@ namespace ProAgil.Repository
 
         public async Task<Palestrante> GetPalestranteAsyncByID(int PalestranteID, bool includeEventos = false)
         {
-             IQueryable<Palestrante> query = _Context.Palestrantes
-            .Include(c => c.RedesSociais);
+            IQueryable<Palestrante> query = _Context.Palestrantes
+           .Include(c => c.RedesSociais);
 
             if (includeEventos)
             {
