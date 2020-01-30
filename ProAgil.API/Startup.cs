@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using ProAgil.Repository;
 using Newtonsoft.Json;
+using AutoMapper;
 
 namespace ProAgil.API
 {
@@ -37,6 +38,8 @@ namespace ProAgil.API
             services.AddCors();
 
             services.AddControllers();
+
+            services.AddAutoMapper();
 
             services.AddMvc(option => option.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)

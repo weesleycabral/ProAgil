@@ -124,14 +124,7 @@
             <div class="form-group col-md-12">
               <label>Tema</label>
               <input
-                class="form-control"
-                [ngClass]="{
-                  'is-invalid':
-                    registerForm.get('tema').errors &&
-                    registerForm.get('tema').touched
-                }"
-                type="text"
-                formControlName="tema"
+                class="form-control"[ngClass]="{'is-invalid': registerForm.get('tema').errors && registerForm.get('tema').touched }" type="text" formControlName="tema"
                 placeholder="Digite o tema"
               />
               <div
@@ -300,7 +293,7 @@
 </div>
 
 <div bsModal #confirm="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
-	<div class="modal-dialog modal-sm">
+	<div class="modal-dialog modal-sm ">
   		<div class="modal-content">
     		<div class="modal-header">
       			<h4 class="modal-title pull-left">
