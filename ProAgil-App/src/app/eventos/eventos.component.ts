@@ -3,7 +3,7 @@ import { EventoService } from '../services/evento.service';
 import { Evento } from '../models/Evento';
 import { BsModalRef, BsModalService, defineLocale, BsLocaleService, ptBrLocale } from 'ngx-bootstrap';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { templateJitUrl } from '@angular/compiler';
+import { ToastrService } from 'ngx-toastr';
 defineLocale('pt-br', ptBrLocale);
 
 
@@ -29,7 +29,8 @@ export class EventosComponent implements OnInit {
     private eventoService: EventoService,
     private modalService: BsModalService,
     private fb: FormBuilder,
-    private localeService: BsLocaleService
+    private localeService: BsLocaleService,
+    private toastr: ToastrService
   ) {
     this.localeService.use('pt-br')
   }
@@ -93,16 +94,18 @@ export class EventosComponent implements OnInit {
         this.eventoService.postEvento(this.evento).subscribe((novoEvento: Evento) => {
           template.hide();
           this.getEventos();
+          this.toastr.success('Inserido com sucesso!');
         }, error => {
-          console.log(error);
+          this.toastr.error(`Erro ao inserir: ${error}`);
         });
       } else {
         this.evento = Object.assign({id: this.evento.id}, this.registerForm.value);
         this.eventoService.putEvento(this.evento).subscribe(() => {
           template.hide();
           this.getEventos();
+          this.toastr.success('Editado com sucesso!');
         }, error => {
-          console.log(error);
+          this.toastr.error(`Erro ao editar: ${error}`);
         });
       }
     }
@@ -132,8 +135,9 @@ export class EventosComponent implements OnInit {
     this.eventoService.deleteEvento(this.evento.id).subscribe(() => {
       template.hide();
       this.getEventos();
+      this.toastr.success('Deletado com sucesso!');
     }, error => {
-      console.log(error);
+      this.toastr.error(`Erro ao deletar: ${error}`);
     });
   }
 
