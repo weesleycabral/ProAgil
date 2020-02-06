@@ -17,12 +17,16 @@ export class EventosComponent implements OnInit {
   imagemLargura = 50;
   imagemMargem = 2;
   mostrarImagem = false;
-  _filtroLista: string;
-  eventosFiltrados: Evento[];
   registerForm: FormGroup;
   evento: Evento;
   modoSalvar = 'post';
   bodyDeletarEvento = '';
+  dataEvento: string;
+  file: File;
+  _filtroLista: string;
+  eventosFiltrados: Evento[];
+  fileNameToUpdate: string;
+  dataAtual: string;
 
 
   constructor(
@@ -32,7 +36,7 @@ export class EventosComponent implements OnInit {
     private localeService: BsLocaleService,
     private toastr: ToastrService
   ) {
-    this.localeService.use('pt-br')
+    this.localeService.use('pt-br');
   }
 
   get filtroLista(): string {
@@ -44,6 +48,12 @@ export class EventosComponent implements OnInit {
     this.eventosFiltrados = this.filtroLista ? this.filtrarEventos(this.filtroLista) : this.eventos;
   }
 
+  filtrarEventos(filtrarPor: string): Evento[] {
+    filtrarPor = filtrarPor.toLowerCase();
+    return this.eventos.filter(evento => evento.tema.toLowerCase().indexOf(filtrarPor) !== -1);
+  }
+
+
   openModal(template: any) {
     this.registerForm.reset();
     template.show();
@@ -52,14 +62,10 @@ export class EventosComponent implements OnInit {
   ngOnInit() {
     this.validation();
     this.getEventos();
+    console.log(this.dataEvento);
   }
 
-  filtrarEventos(filtrarPor: string): Evento[] {
-    filtrarPor = filtrarPor.toLocaleLowerCase();
-    return this.eventos.filter(
-      evento => evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1
-    );
-  }
+
 
   getEventos() {
     this.eventoService.getAllEvento().subscribe(
@@ -87,10 +93,29 @@ export class EventosComponent implements OnInit {
     });
   }
 
+  uploadImage() {
+    if (this.modoSalvar === 'post') {
+      const nomeArquivo = this.evento.imagemURL.split('\\', 3);
+      this.evento.imagemURL = nomeArquivo[2];
+      this.eventoService.postImagem(this.file, nomeArquivo[2]).subscribe(() => {
+        this.dataAtual = new Date().getMilliseconds().toString();
+        this.getEventos();
+      });
+    } else {
+      this.evento.imagemURL =  this.fileNameToUpdate;
+      this.eventoService.postImagem(this.file,  this.fileNameToUpdate).subscribe(() =>{
+        this.dataAtual = new Date().getMilliseconds().toString();
+        this.getEventos();
+      });
+    }
+
+  }
+
   salvarAlteracao(template: any) {
     if (this.registerForm.valid) {
       if (this.modoSalvar === 'post') {
         this.evento = Object.assign({}, this.registerForm.value);
+        this.uploadImage();
         this.eventoService.postEvento(this.evento).subscribe((novoEvento: Evento) => {
           template.hide();
           this.getEventos();
@@ -99,7 +124,8 @@ export class EventosComponent implements OnInit {
           this.toastr.error(`Erro ao inserir: ${error}`);
         });
       } else {
-        this.evento = Object.assign({id: this.evento.id}, this.registerForm.value);
+        this.evento = Object.assign({ id: this.evento.id }, this.registerForm.value);
+        this.uploadImage();
         this.eventoService.putEvento(this.evento).subscribe(() => {
           template.hide();
           this.getEventos();
@@ -120,8 +146,9 @@ export class EventosComponent implements OnInit {
     this.modoSalvar = 'put';
     this.openModal(template);
     this.evento = Object.assign({}, evento);
-    this.evento = evento;
-    this.registerForm.patchValue(evento);
+    this.fileNameToUpdate = evento.imagemURL.toString()
+    this.evento.imagemURL = '';
+    this.registerForm.patchValue(this.evento);
 
   }
 
@@ -139,6 +166,14 @@ export class EventosComponent implements OnInit {
     }, error => {
       this.toastr.error(`Erro ao deletar: ${error}`);
     });
+  }
+
+  onFileChange(event) {
+    const reader = new FileReader();
+
+    if (event.target.files && event.target.files.length) {
+      this.file = event.target.files;
+    }
   }
 
 }
