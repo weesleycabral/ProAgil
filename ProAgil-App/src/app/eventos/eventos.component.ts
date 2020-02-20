@@ -115,28 +115,35 @@ export class EventosComponent implements OnInit {
     if (this.registerForm.valid) {
       if (this.modoSalvar === 'post') {
         this.evento = Object.assign({}, this.registerForm.value);
+
         this.uploadImage();
-        this.eventoService.postEvento(this.evento).subscribe((novoEvento: Evento) => {
-          template.hide();
-          this.getEventos();
-          this.toastr.success('Inserido com sucesso!');
-        }, error => {
-          this.toastr.error(`Erro ao inserir: ${error}`);
-        });
+
+        this.eventoService.postEvento(this.evento).subscribe(
+          (novoEvento: Evento) => {
+            template.hide();
+            this.getEventos();
+            this.toastr.success('Inserido com Sucesso!');
+          }, error => {
+            this.toastr.error(`Erro ao Inserir: ${error}`);
+          }
+        );
       } else {
         this.evento = Object.assign({ id: this.evento.id }, this.registerForm.value);
+
         this.uploadImage();
-        this.eventoService.putEvento(this.evento).subscribe(() => {
-          template.hide();
-          this.getEventos();
-          this.toastr.success('Editado com sucesso!');
-        }, error => {
-          this.toastr.error(`Erro ao editar: ${error}`);
-        });
+
+        this.eventoService.putEvento(this.evento).subscribe(
+          () => {
+            template.hide();
+            this.getEventos();
+            this.toastr.success('Editado com Sucesso!');
+          }, error => {
+            this.toastr.error(`Erro ao Editar: ${error}`);
+          }
+        );
       }
     }
   }
-
   novoEvento(template: any) {
     this.modoSalvar = 'post';
     this.openModal(template);

@@ -26,9 +26,9 @@ export class EventoService {
   }
 
   postImagem(file: File, name: string) {
-    const fileToUpload = <File>file[0];
+    const fileToUplaod = <File>file[0];
     const formData = new FormData();
-    formData.append('file', fileToUpload, name);
+    formData.append('file', fileToUplaod, name);
 
     return this.http.post(`${this.baseURL}/upload`, formData);
   }

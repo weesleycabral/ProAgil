@@ -7,15 +7,15 @@ namespace ProAgil.API.DTOs
     {
         public int ID { get; set; }
 
-        [Required(ErrorMessage = "{0} é obrigatório.")]
+        // [Required(ErrorMessage = "{0} é obrigatório.")]
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public string ImagemURL { get; set; }
 
-        [Phone]
+        // [Phone]
         public int Telefone { get; set; }
 
-        [EmailAddress]
+        // [EmailAddress]
         public string Email { get; set; }
         public List<RedeSocialDTO> RedesSociais { get; set; }
         public List<EventoDTO> Eventos { get; set; }

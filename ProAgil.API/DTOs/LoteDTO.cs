@@ -6,10 +6,10 @@ namespace ProAgil.API.DTOs
     {
         public int ID { get; set; }
 
-        [Required(ErrorMessage = "{0} é obrigatório.")]
+        // [Required(ErrorMessage = "{0} é obrigatório.")]
         public string Nome { get; set; }
 
-        [Required(ErrorMessage = "{0} é obrigatório.")]
+        // [Required(ErrorMessage = "{0} é obrigatório.")]
         public decimal Preco { get; set; }
         public string DataInicio { get; set; }
         public string DataFim { get; set; }
